@@ -1,0 +1,164 @@
+package university;
+
+/**
+ * This class represents a university education system.
+ * 
+ * It manages students and courses.
+ *
+ */
+public class University {
+	
+	private String name;
+	private String nameRector;
+	private String surnameRector;
+	private Student students[];
+	private Subject courses[];
+	
+	final static int MAX_STUDENTI = 1000;
+	final static int MAX_COURSES = 50;
+	
+	private int nextMatricola = 10000;
+	private int nextCourseCode = 10;
+
+	/**
+	 * Constructor
+	 * @param name name of the university
+	 */
+	public University(String name){
+		this.name = name;
+		
+		this.students = new Student[MAX_STUDENTI];
+		this.courses = new Subject[MAX_COURSES];
+	}
+	
+	/**
+	 * Getter for the name of the university
+	 * @return name of university
+	 */
+	public String getName(){
+		return this.name;
+	}
+	
+	/**
+	 * Defines the rector for the university
+	 * 
+	 * @param first
+	 * @param last
+	 */
+	public void setRector(String first, String last){
+		this.nameRector = name;
+		this.surnameRector = last;
+	}
+	
+	/**
+	 * Retrieves the rector of the university
+	 * 
+	 * @return
+	 */
+	public String getRector(){
+		return (this.nameRector + " " + this.surnameRector);
+	}
+	
+	/**
+	 * Enroll a student in the university
+	 * 
+	 * @param first first name of the student
+	 * @param last last name of the student
+	 * @return
+	 */
+	public int enroll(String first, String last){
+		
+		Student s = new Student(name, last, this.nextMatricola);
+		this.students[this.nextMatricola - 10000] = s;
+		this.nextMatricola++;
+		
+		return (this.nextMatricola - 1);
+	}
+	
+	/**
+	 * Retrieves the information for a given student
+	 * 
+	 * @param id the id of the student
+	 * @return information about the student
+	 */
+	public String student(int id){
+		if (id >= this.nextMatricola) return null;
+		
+		Student s = this.students[id - 10000];
+		return (s.stringVersion());
+	}
+	
+	/**
+	 * Activates a new course with the given teacher
+	 * 
+	 * @param title title of the course
+	 * @param teacher name of the teacher
+	 * @return the unique code assigned to the course
+	 */
+	public int activate(String title, String teacher){
+		
+		Subject c = new Subject(title, teacher, this.nextCourseCode);
+		this.courses[this.nextCourseCode - 10] = c;
+		this.nextCourseCode++;
+		
+		return (this.nextCourseCode - 1);
+	}
+	
+	/**
+	 * Retrieve the information for a given course
+	 * 
+	 * @param code unique code of the course
+	 * @return information about the course
+	 */
+	public String course(int code){
+		if (code >= this.nextCourseCode) return null;
+		
+		Subject c = this.courses[code - 10];
+		return (c.stringVersion());
+	}
+	
+	/**
+	 * Register a student to attend a course
+	 * @param studentID id of the student
+	 * @param courseCode id of the course
+	 */
+	public void register(int studentID, int courseCode){
+		this.students[studentID - 10000].addCourse(this.courses[courseCode - 10]);
+		this.courses[courseCode - 10].addStudent(this.students[studentID - 10000]);
+	}
+	
+	/**
+	 * Retrieve a list of attendees
+	 * 
+	 * @param courseCode unique id of the course
+	 * @return list of attendees separated by "\n"
+	 */
+	public String listAttendees(int courseCode){
+		
+		return (this.courses[courseCode - 10].listAttendees());
+	}
+
+	/**
+	 * Retrieves the study plan for a student
+	 * 
+	 * @param studentID id of the student
+	 * @return list of courses the student is registered for
+	 */
+	public String studyPlan(int studentID){
+		
+		return (this.students[studentID - 10000].studyPlan());
+	}
+	
+	public void exam(int studentID, int courseCode, int mark) {
+		this.students[studentID - 10000].addMark(mark);
+		this.courses[courseCode - 10].addMark(mark);
+	}
+	
+	public String courseAvg(int courseCode) {
+		return this.courses[courseCode - 10].avgMark();
+	}
+	
+	public String studentAvg(int studentID) {
+		return this.students[studentID - 10000].avgMark();
+	}
+}
